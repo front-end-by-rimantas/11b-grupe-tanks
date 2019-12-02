@@ -1,0 +1,13 @@
+.game {
+    display: inline-block;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    background-color: #555;
+}
+    .game.grass {
+        background-image: url(../img/land/tileGrass1.png);
+    }
+    .game.sand {
+        background-image: url(../img/land/tileSand1.png);
+    }
