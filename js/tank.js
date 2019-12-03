@@ -1,6 +1,7 @@
 class Player {
     constructor ( index, name, tankColor, position, screenSize ) {
         this.index = index;
+        this.DOMtank;
         this.name = name;
         this.life = 3;                                  // 3 gyvybes
         this.tankColor = tankColor || 'red';
@@ -16,7 +17,14 @@ class Player {
         this.direction = 0;                             // 0deg - tanko pasisukimo kryptis
         this.directionSpeed = 10;                       // 10deg/s - tanko posukio greitis
         this.fireRate = 3;                              // 1 bullet per 3 seconds
+        this.lastFire = 0;
         this.keyboard;
+        this.keyboardPressed = {
+            up: false,
+            down: false,
+            right: false,
+            left: false
+        };
         
         this.init( position, screenSize );
     }
@@ -60,24 +68,74 @@ class Player {
     }
 
     setKeybind() {
+        // binding keyCode's
         const sets = [
-            { up: 'w', down: 's', right: 'd', left: 'a', fire: 'space' },
-            { up: 'arrow-up', down: 'arrow-down', right: 'arrow-right', left: 'arrow-left', fire: 'enter' }
+            { up: 87, down: 83, right: 68, left: 65, fire: 32 },
+            { up: 38, down: 40, right: 39, left: 37, fire: 13 }
         ];
 
         this.keyboard = sets[this.index];
     }
 
     renderTank = ( DOM ) => {
-        console.log(this.position);
-        
-        const tank = `<img class="tank" src="./img/tanks/tank_${this.tankColor}.png"
+        const tank = `<img class="tank"
+                        src="./img/tanks/tank_${this.tankColor}.png"
+                        data-index="${this.index}"
                         style="width: ${this.tankSize.width}px;
                             height: ${this.tankSize.height}px;
                             top: ${this.position.top}px;
                             left: ${this.position.left}px;
                             transform: rotate(${this.direction}deg);">`;
-        DOM.innerHTML += tank;
+        DOM.insertAdjacentHTML('beforeend', tank);
+
+        this.DOMtank = DOM.querySelector(`.tank[data-index="${this.index}"]`);
+
+        window.addEventListener('keydown', (e) => {
+            switch (e.keyCode) {
+                case this.keyboard.up:
+                    this.keyboardPressed.up = true;
+                    break;
+                case this.keyboard.left:
+                    this.keyboardPressed.left = true;
+                    break;
+                case this.keyboard.down:
+                    this.keyboardPressed.down = true;
+                    break;
+                case this.keyboard.right:
+                    this.keyboardPressed.right = true;
+                    break;
+            
+                default:
+                    break;
+            }
+        })
+
+        window.addEventListener('keyup', (e) => {
+            switch (e.keyCode) {
+                case this.keyboard.up:
+                    this.keyboardPressed.up = false;
+                    break;
+                case this.keyboard.left:
+                    this.keyboardPressed.left = false;
+                    break;
+                case this.keyboard.down:
+                    this.keyboardPressed.down = false;
+                    break;
+                case this.keyboard.right:
+                    this.keyboardPressed.right = false;
+                    break;
+            
+                default:
+                    break;
+            }
+        })
+    }
+
+    move = ( dt ) => {
+        this.position.top += 0;
+        this.position.left += 0;
+        this.DOMtank.style.top = this.position.top + 'px';
+        this.DOMtank.style.left = this.position.left + 'px';
     }
 }
 
