@@ -9,8 +9,9 @@ class TanksGame {
             width: 900,
             height: 600
         }
-        this.player1 = new Player(0, p1Name, 'red', 'topCenter', this.screenSize);
+        this.player1 = new Player(0, p1Name, 'red', 'rightCenter', this.screenSize);
         this.player2 = new Player(1, p2Name, 'blue', 'bottomCenter', this.screenSize);
+        this.bullets = [];
         this.groundType = groundType || 'grass';
 
         this.init();

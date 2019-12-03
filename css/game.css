@@ -19,3 +19,13 @@
     .game > .ground.sand {
         background-image: url(../img/land/tileSand1.png);
     }
+        .game > .ground > .tank {
+            display: inline-block;
+            width: 42px;
+            height: 46px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            object-fit: contain;
+            object-position: center;
+        }

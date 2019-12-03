@@ -2,17 +2,28 @@ class Player {
     constructor ( index, name, tankColor, position, screenSize ) {
         this.index = index;
         this.name = name;
+        this.life = 3;                                  // 3 gyvybes
         this.tankColor = tankColor || 'red';
-        this.tankSize = { width: 60, height: 60 }
-        this.position = this.setInitialPosition( position, screenSize );
-        this.direction = 'up';
+        this.tankSize = { width: 46, height: 46 }
+        this.position;
+        this.speed = 0;
+        this.maxForwardSpeed = 100;                     // 100px/s - max greitis i prieki
+        this.maxBackwardSpeed = 50;                     // 50px/s - max greitis atbulomis
+        this.forwardAccelaration = 20;                  // 20px/s - pagreitis i prieki
+        this.backwardAccelaration = 30;                 // 20px/s - pagreitis atbulomis
+        this.breakingSpeed = 10;                        // 10px/s - stabdymo pagreitis
+        this.frictionSpeed = 5;                         // 5px/s - stabdymo pagreitis (trintis), jei nevaldai tanko
+        this.direction = 0;                             // 0deg - tanko pasisukimo kryptis
+        this.directionSpeed = 10;                       // 10deg/s - tanko posukio greitis
+        this.fireRate = 3;                              // 1 bullet per 3 seconds
         this.keyboard;
-
-        this.init();
+        
+        this.init( position, screenSize );
     }
 
-    init() {
-        this.setBarrelDirection();
+    init( position, screenSize ) {
+        this.setInitialPosition( position, screenSize );
+        this.setInitialDirection( position );
         this.setKeybind();
     }
 
@@ -20,32 +31,32 @@ class Player {
         const positions = {
             topCenter: {
                 top: 0,
-                left: 50
+                left: (screenSize.width - this.tankSize.width) / 2
             },
             bottomCenter: {
-                top: 100,
-                left: 50
+                top: screenSize.height - this.tankSize.height,
+                left:  (screenSize.width - this.tankSize.width) / 2
             },
             leftCenter: {
-                top: 50,
+                top: (screenSize.height - this.tankSize.height) / 2,
                 left: 0
             },
             rightCenter: {
-                top: 50,
-                left: 100
+                top: (screenSize.height - this.tankSize.height) / 2,
+                left: screenSize.width - this.tankSize.width
             },
         }
         this.position = positions[position];
     }
 
-    setBarrelDirection() {
-        const directions = {
-            topCenter: 'down',
-            bottomCenter: 'up',
-            leftCenter: 'right',
-            rightCenter: 'left'
+    setInitialDirection( position ) {
+        const positions = {
+            topCenter: 0,
+            bottomCenter: 180,
+            leftCenter: 270,
+            rightCenter: 90
         }
-        this.direction = directions[this.position];
+        this.direction = positions[position];
     }
 
     setKeybind() {
@@ -58,7 +69,14 @@ class Player {
     }
 
     renderTank = ( DOM ) => {
-        const tank = `<img src="./img/tanks/tank_${this.tankColor}.png">`;
+        console.log(this.position);
+        
+        const tank = `<img class="tank" src="./img/tanks/tank_${this.tankColor}.png"
+                        style="width: ${this.tankSize.width}px;
+                            height: ${this.tankSize.height}px;
+                            top: ${this.position.top}px;
+                            left: ${this.position.left}px;
+                            transform: rotate(${this.direction}deg);">`;
         DOM.innerHTML += tank;
     }
 }
